@@ -1,0 +1,31 @@
+.selected {
+  fill: #d63131;
+}
+
+.selected-sector {
+  stroke: #d63131;
+  stroke-width: 2;
+}
+
+.monitor-panel {
+  
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 200px;
+  padding: 10px;
+  text-align: center;
+  background: #eee;
+}
+
+.monitor-panel > div {
+  cursor: pointer;
+  padding: 10px 0px;
+}
+
+.monitor-panel > div:hover {
+  background: #fff;
+}
+.s1 {
+  /* stroke:red; */
+} 
