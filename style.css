@@ -2,30 +2,55 @@
   fill: #d63131;
 }
 
+.selected-panel {
+  background: #ffffff;
+}
+
 .selected-sector {
   stroke: #d63131;
   stroke-width: 2;
 }
 
 .monitor-panel {
-  
   position: fixed;
   top: 0;
   right: 0;
   width: 200px;
   padding: 10px;
-  text-align: center;
+  font-size: 18px;
+  text-align: left;
   background: #eee;
+
 }
 
-.monitor-panel > div {
+.monitor-panel > div div {
   cursor: pointer;
-  padding: 10px 0px;
+  margin-bottom: 3px;
+  padding: 10px 3px;
 }
 
-.monitor-panel > div:hover {
+.monitor-panel > div div:hover {
   background: #fff;
+  transition: .7s;
 }
 .s1 {
   /* stroke:red; */
 } 
+
+/* sub-menu */
+
+.sub-item {
+  display: none;
+  font-size: 16px;
+  text-transform: lowercase;  
+  text-align: center;
+  background: #d3d3d3;
+}
+
+.show {
+  display: block;
+}
+
+.selected-panel > .sub-item {
+  display: block;
+}
