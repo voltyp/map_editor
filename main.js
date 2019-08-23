@@ -1,5 +1,5 @@
 const map = document.querySelector('svg');
-const sector = map.querySelectorAll('g');
+const sector = map.querySelectorAll('.sector');
 const startNum = document.querySelector('.start');
 
 const sectorInfo = {};
@@ -19,11 +19,15 @@ function panelFilling() {
     // item - сектора
     console.log(item , i);
     // получаем класс сектора для добавления его в атрибут
+    item.setAttribute('class', 's'+ (i+1))
     const sectorName = item.getAttribute('class');
-
+    
+    
     // create wrapper for button in monitor-panel
     const wrapButton  = document.createElement('div');
-          wrapButton.classList.add('wrapper-button');
+          wrapButton.classList.add('wrapper-button');    
+          // записываем имя сектора за который отвечает данная кнопка 
+          wrapButton.setAttribute('name', sectorName);
 
     const buttonPanel = document.createElement('div');
     // Добавляем кнопку в обертку
@@ -33,7 +37,22 @@ function panelFilling() {
     const subRow = document.createElement('div');
           subRow.classList.add('sub-item', 'change-start-numbering');
           subRow.textContent = 'Начало нумерации';
+    
+    // добавляем поле вводаж 
+    const inputWrap = document.createElement('div'),
+          inputRow = document.createElement('input'),
+          inputButton = document.createElement('button');
 
+          inputWrap.classList.add('sub-item', 'input-wrap');
+          inputRow.classList.add('input-start-numbering');
+          inputButton.classList.add('button-start-numbering');
+          inputButton.textContent = 'ok';
+          
+    inputWrap.appendChild(inputRow);
+    inputWrap.appendChild(inputButton);
+    subRow.appendChild(inputWrap);
+           
+// кнопка запуска нумерации
     const buttonNum = document.createElement('div');
           buttonNum.classList.add('sub-item', 'start-numbering');
           buttonNum.setAttribute('s-pos', sectorName)
@@ -43,18 +62,23 @@ function panelFilling() {
     wrapButton.appendChild(buttonNum);
     // выводим название кнопки 
     buttonPanel.textContent = 'Сектор ' + sectorName;
-
-    // устанавливаем атрибут из которого будем брать класс нужного сектора
-    buttonPanel.setAttribute('name', sectorName);
     
     // добавляем кнопки в панель управления 
     panelMonitor.appendChild(wrapButton);
-    // console.log(item.getAttribute('class'))
+    // console.log(item.getAttribute('class'))   
 
     sectorInfo[sectorName] = {
+      sector: sectorName,
       pos: i,
       startNum: 1
     }
+
+     // обрбаботчик на кнопку ок при выборе начала нумерации
+     inputButton.addEventListener('click', () => {
+      let value = inputRow.value;
+      sectorInfo[sectorName].startNum = +value;
+      console.log(sectorInfo)
+    });
   
     console.log(sectorInfo)
 
@@ -63,7 +87,11 @@ function panelFilling() {
   // добавляем обработчик на клик по кнопке 
   panelMonitor.addEventListener('click', (e) => {
     const target = e.target;
-    console.log(target);
+
+    // получаем родителя в который записана информация о секторе 
+    const getParent = target.parentNode;
+
+    console.log(getParent);
     
     function clearSelected() {
       for (let i = 0; i < sector.length; i++) {
@@ -76,12 +104,12 @@ function panelFilling() {
     }
 
     // делегирование, если клик по кнопке то красим сектор
-    if (target.getAttribute('name')) {
+    if (getParent.getAttribute('name')) {
 
       clearSelected();
 
       // получаем класс сектора
-      const nameButton = target.getAttribute('name');
+      const nameButton = getParent.getAttribute('name');
       // получаем сам сектор
       const selectedSector = document.querySelector('.'+nameButton);
 
@@ -91,10 +119,18 @@ function panelFilling() {
 
     }   
 
+    // установка начала нумерации
+    if (target.classList.contains('change-start-numbering')) {
+      inputNum = document.querySelectorAll('.input-start-numbering');      
+      target.childNodes[1].classList.toggle('sub-item');
 
 
+
+    }
+
+    // запуск нумерации
     if (target.classList.contains('start-numbering')) {
-      const sector = target.getAttribute('s-pos');      
+      const sector = getParent.getAttribute('name');    
       number(sectorInfo[sector].pos, sectorInfo[sector].startNum)  
     }
     
@@ -106,8 +142,6 @@ panelFilling()
 
 // end pm
 
-
-console.log(sector[0].childNodes);
 
 
 // устанавливаем конец ряда.
@@ -151,7 +185,7 @@ function number(s, sPlace) {
         // проверяем на конец ряда
         if (item.hasAttribute('br')) {
           iRow++;
-          (sPlace) ? iPlace = startPlace : iPlace = 1; 
+          (sPlace) ? iPlace = sPlace : iPlace = 1; 
         }
 
       }
