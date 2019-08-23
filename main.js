@@ -38,7 +38,7 @@ function panelFilling() {
           subRow.classList.add('sub-item', 'change-start-numbering');
           subRow.textContent = 'Начало нумерации';
     
-    // добавляем поле вводаж 
+    // добавляем поле ввода начала нумерации
     const inputWrap = document.createElement('div'),
           inputRow = document.createElement('input'),
           inputButton = document.createElement('button');
@@ -58,8 +58,23 @@ function panelFilling() {
           buttonNum.setAttribute('s-pos', sectorName)
           buttonNum.textContent = 'Пронумеровать';
     
+    // кнопка выбора цвета
+   const buttonColor = document.createElement('div');
+         buttonColor.classList.add('sub-item', 'button-color');
+         
+   const color = ['#FFCCCC','#FFF497', '#CCFFFF', '#EEEEEE'];
+
+   for (let j = 0; j < color.length; j++) {
+    const circleColor = document.createElement('div');
+          circleColor.classList.add('color-circle');
+          circleColor.style.background = color[j];
+
+    buttonColor.appendChild(circleColor);
+   }
+
     wrapButton.appendChild(subRow);
     wrapButton.appendChild(buttonNum);
+    wrapButton.appendChild(buttonColor);
     // выводим название кнопки 
     buttonPanel.textContent = 'Сектор ' + sectorName;
     
@@ -123,9 +138,6 @@ function panelFilling() {
     if (target.classList.contains('change-start-numbering')) {
       inputNum = document.querySelectorAll('.input-start-numbering');      
       target.childNodes[1].classList.toggle('sub-item');
-
-
-
     }
 
     // запуск нумерации
@@ -172,7 +184,6 @@ function number(s, sPlace) {
     let iPlace = sPlace || 1,
     iRow = 1,
     iSector = sector[s].getAttribute('class');
-    console.log(iSector, 'tut')
     sector[s].childNodes.forEach(function(item, i) {
 
       if (item.tagName == 'circle') {
