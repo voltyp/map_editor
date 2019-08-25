@@ -1,3 +1,8 @@
+h4 {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
 .selected {
   fill: #d63131;
 }
@@ -15,7 +20,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 200px;
+  width: 250px;
   padding: 10px;
   font-size: 18px;
   text-align: left;
@@ -62,6 +67,11 @@
 
 .color-circle {
   width: 10%;
-  height: 10%;
+  height: 10px;
   border-radius: 50%;
+}
+
+.input-wrap {
+  display: flex;
+  flex-direction: column;
 }

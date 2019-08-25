@@ -13,6 +13,13 @@ sector.forEach(function(item){
 // panel-monitor
 const panelMonitor = document.querySelector('.monitor-panel');
 
+function createElement(type, Class, Text, setAtr) {
+  const div  = document.createElement(type); 
+        div.classList.add(Class);   
+        div.setAttribute(setAtr[0], setAtr[1]);   
+        div.textContent = Text;
+}
+
 function panelFilling() {
   
   sector.forEach(function(item, i){
@@ -22,8 +29,7 @@ function panelFilling() {
     item.setAttribute('class', 's'+ (i+1))
     const sectorName = item.getAttribute('class');
     
-    
-    // create wrapper for button in monitor-panel
+    // создаем обертку для кнопки в панели управления
     const wrapButton  = document.createElement('div');
           wrapButton.classList.add('wrapper-button');    
           // записываем имя сектора за который отвечает данная кнопка 
@@ -32,26 +38,98 @@ function panelFilling() {
     const buttonPanel = document.createElement('div');
     // Добавляем кнопку в обертку
     wrapButton.appendChild(buttonPanel);
+    // выводим название кнопки 
+    buttonPanel.textContent = 'Сектор ' + sectorName;
+
 
     // добавляем пункты скрытого меню
     const subRow = document.createElement('div');
           subRow.classList.add('sub-item', 'change-start-numbering');
-          subRow.textContent = 'Начало нумерации';
+          subRow.textContent = 'Нумерация';
     
     // добавляем поле ввода начала нумерации
-    const inputWrap = document.createElement('div'),
-          inputRow = document.createElement('input'),
+    const inputWrap = document.createElement('div'), 
+          inputWrapItem = document.createElement('div'), 
+          // заголовок
+          inputTitle = document.createElement('h4'),
+
+          inputRow = document.createElement('input'),          
           inputButton = document.createElement('button');
+
+          // добавляем в обертку инпут и кнопку
+          inputWrapItem.appendChild(inputRow);
+          inputWrapItem.appendChild(inputButton);
 
           inputWrap.classList.add('sub-item', 'input-wrap');
           inputRow.classList.add('input-start-numbering');
           inputButton.classList.add('button-start-numbering');
+          inputTitle.textContent = 'Начало нумерации c:';
           inputButton.textContent = 'ok';
           
-    inputWrap.appendChild(inputRow);
-    inputWrap.appendChild(inputButton);
+    inputWrap.appendChild(inputTitle);
+    inputWrap.appendChild(inputWrapItem);
     subRow.appendChild(inputWrap);
-           
+
+    const createArbitaryRow = (newRow) => {
+      const arbitraryWrap = document.createElement('div'),
+          arbitaryItem = document.createElement('div'),
+          arbitaryTitle = document.createElement('h4'),
+          arbitaryCheckBox = document.createElement('input'),
+          arbitaryInput = document.createElement('input'),
+          arbitaryButton = document.createElement('button');
+
+          arbitraryWrap.classList.add('sub-item', 'input-wrap');
+          arbitaryTitle.textContent = 'Произвольная точка начала: ';
+          arbitaryCheckBox.setAttribute('type', 'checkbox');
+          arbitaryCheckBox.classList.add('checkbox');
+          arbitaryButton.textContent = 'ok';
+
+          arbitaryItem.appendChild(arbitaryCheckBox);
+          arbitaryItem.appendChild(arbitaryInput);
+          arbitaryItem.appendChild(arbitaryButton);
+
+          arbitraryWrap.appendChild(arbitaryTitle);
+          arbitraryWrap.appendChild(arbitaryItem);
+          
+          (newRow) ? subRow.insertBefore(arbitraryWrap, addArbitaryButton) : subRow.appendChild(arbitraryWrap);
+
+          // оставляем только один активный чекбокс
+          arbitaryCheckBox.addEventListener('click', function(e) {
+            
+            const allCheckbox = document.querySelectorAll('.checkbox');
+            
+            for (let i = 0; i < allCheckbox.length; i++) {
+              allCheckbox[i].checked = false;
+            }
+
+            e.target.checked = true;
+            
+          });
+
+          arbitaryInput.addEventListener('change' , () => {
+            let valueInput = arbitaryInput.value;
+            arbitaryCheckBox.setAttribute('startNum', valueInput);
+            // arbitaryCheckBox.checked = false;
+          })
+
+          arbitaryButton.addEventListener('click', () => {
+            arbitaryCheckBox.checked = false;
+          })
+
+
+    }
+
+    createArbitaryRow()
+
+    const addArbitaryButton = document.createElement('button');
+          addArbitaryButton.textContent = 'Добавить точку начала';
+          
+          subRow.appendChild(addArbitaryButton);
+
+          addArbitaryButton.addEventListener('click', () => {
+            createArbitaryRow(true)
+          });
+
 // кнопка запуска нумерации
     const buttonNum = document.createElement('div');
           buttonNum.classList.add('sub-item', 'start-numbering');
@@ -75,8 +153,7 @@ function panelFilling() {
     wrapButton.appendChild(subRow);
     wrapButton.appendChild(buttonNum);
     wrapButton.appendChild(buttonColor);
-    // выводим название кнопки 
-    buttonPanel.textContent = 'Сектор ' + sectorName;
+    
     
     // добавляем кнопки в панель управления 
     panelMonitor.appendChild(wrapButton);
@@ -159,14 +236,39 @@ panelFilling()
 // устанавливаем конец ряда.
 map.addEventListener('click', (e) => {
   const target = e.target;
+  const allCheckbox = document.querySelectorAll('.checkbox');
+  let flagChecked = false;
+  let checkbox;
+
+  for (let i = 0; i < allCheckbox.length; i++) {
+    
+    if (allCheckbox[i].checked) {
+      flagChecked = true;
+      checkbox = allCheckbox[i].getAttribute('startNum');     
+      console.log(checkbox, 'first') 
+    }
+      
+
+  }
 
   // проверка на клик по кругу и чтобы была выбрана зона в панели управления по которой клик происходит
   if (target.tagName == 'circle' && target.parentNode.classList.contains('selected-sector')) {
-    e.target.setAttribute('br', 1);
-    e.target.classList.toggle('selected');
-  }
   
-  console.log(e.target.tagName == 'circle');
+    if (flagChecked) {
+      console.log(checkbox, 'second') 
+      e.target.setAttribute('startNum', checkbox)
+      e.target.classList.toggle('selected');
+      // поменять цвет точки начала нумерации
+    } else {
+      e.target.setAttribute('br', 1);
+      e.target.classList.toggle('selected');
+    }
+    
+  }
+
+  
+  
+  console.log();
   
 });
 
@@ -188,16 +290,24 @@ function number(s, sPlace) {
 
       if (item.tagName == 'circle') {
         
+        if (item.hasAttribute('startNum')) {
+          iPlace = item.getAttribute('startNum');
+        }
+
         console.log(item);
         item.setAttribute('id', iSector + 'r' + iRow + 'p' + iPlace);  
         item.classList.remove('selected');
         iPlace++;
+
+        
 
         // проверяем на конец ряда
         if (item.hasAttribute('br')) {
           iRow++;
           (sPlace) ? iPlace = sPlace : iPlace = 1; 
         }
+
+
 
       }
 
