@@ -6,6 +6,9 @@ h4 {
 .selected {
   fill: #d63131;
 }
+.selected-start {
+  fill: #9CD116;
+}
 
 .selected-panel {
   background: #ffffff;

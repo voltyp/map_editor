@@ -257,7 +257,7 @@ map.addEventListener('click', (e) => {
     if (flagChecked) {
       console.log(checkbox, 'second') 
       e.target.setAttribute('startNum', checkbox)
-      e.target.classList.toggle('selected');
+      e.target.classList.toggle('selected-start');
       // поменять цвет точки начала нумерации
     } else {
       e.target.setAttribute('br', 1);
@@ -282,6 +282,9 @@ startNum.addEventListener('click', () => {
 function number(s, sPlace) {
   // for (let i = 0; i < sector.length; i++) {
     sector[s].classList.remove('selected-sector');
+
+    // if (reverseNumbering)
+      
     // счетчик мест и ряда.
     let iPlace = sPlace || 1,
     iRow = 1,
@@ -290,8 +293,9 @@ function number(s, sPlace) {
 
       if (item.tagName == 'circle') {
         
-        if (item.hasAttribute('startNum')) {
+        if (item.hasAttribute('startNum') && item.classList.contains('selected-start')) {
           iPlace = item.getAttribute('startNum');
+          item.classList.remove('selected-start');
         }
 
         console.log(item);
